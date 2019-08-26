@@ -27,6 +27,9 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    'linebot_token' => env('LINEBOT_TOKEN'),
+    'linebot_secret' => env('LINEBOT_SECRET'),
+    'line_user_id' => env('LINE_USER_ID'),
 
     /*
     |--------------------------------------------------------------------------
