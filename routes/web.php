@@ -15,4 +15,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/callback', 'LineController@line');
+Route::middleware('cors')->post('/callback', 'LineController@line');
