@@ -29,9 +29,13 @@ class LineBotService
      * @param string $lineUserId
      * @param LINEBot $lineBot
      */
-    public function __construct(string $lineUserId, LINEBot $lineBot)
+    public function __construct(LINEBot $lineBot, string $lineUserId = '')
     {
-        $this->lineUserId = $lineUserId;
+        if(empty($lineUserId)){
+            $this->lineUserId = env('LINE_USER_ID');
+        } else {
+            $this->lineUserId = $lineUserId;
+        }
         $this->lineBot = $lineBot;
     }
 
