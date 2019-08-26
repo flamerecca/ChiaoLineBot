@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
     private function lineBotServiceRegister()
     {
         $this->app->singleton(LineBotService::class, function () {
-            return new LineBotService(config('app.line_user_id'), new LINEBot());
+            return new LineBotService(config('app.line_user_id'), app(LINEBot::class));
         });
     }
 
