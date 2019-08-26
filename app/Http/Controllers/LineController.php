@@ -41,6 +41,11 @@ class LineController
      */
     public function line(Request $request)
     {
+        dd(
+            config('app.line_user_id'),
+            config('app.linebot_token'),
+            config('app.linebot_secret')
+        );
         return $this->LINEBot->pushMessage(config('app.line_user_id'), new TextMessageBuilder('aaa'))->getRawBody();
     }
 }
