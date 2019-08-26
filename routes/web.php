@@ -15,6 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware('cors')->post('/callback', function () {
+Route::post('/callback', function () {
     return 'aaa';
 });
