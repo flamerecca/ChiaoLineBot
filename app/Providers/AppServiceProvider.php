@@ -23,8 +23,8 @@ class AppServiceProvider extends ServiceProvider
     private function lineBotRegister()
     {
         $this->app->singleton(LINEBot::class, function () {
-            $httpClient = new CurlHTTPClient(config('linebot_token'));
-            return new LINEBot($httpClient, ['channelSecret' => config('linebot_secret')]);
+            $httpClient = new CurlHTTPClient(config('app.linebot_token'));
+            return new LINEBot($httpClient, ['channelSecret' => config('app.linebot_secret')]);
         });
     }
     private function lineBotServiceRegister()
