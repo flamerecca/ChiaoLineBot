@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use LINE\LINEBot\MessageBuilder;
 use LINE\LINEBot;
+use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 
 class LineController
@@ -36,10 +37,10 @@ class LineController
 
     /**
      * @param Request $request
-     * @return LINEBot\Response
+     * @return string
      */
     public function line(Request $request)
     {
-        return $this->LINEBot->pushMessage(env('LINE_USER_ID'), new TextMessageBuilder('aaa'));
+        return $this->LINEBot->pushMessage(config('app.line_user_id'), new TextMessageBuilder('aaa'))->getRawBody();
     }
 }
