@@ -40,13 +40,11 @@ class LineBotService
      * LineBotService constructor.
      * @param string $lineUserId
      * @param LINEBot $lineBot
-     * @param TemplateMessageBuilder $templateMessageBuilder
      */
-    public function __construct(string $lineUserId, LINEBot $lineBot, TemplateMessageBuilder $templateMessageBuilder)
+    public function __construct(string $lineUserId, LINEBot $lineBot)
     {
         $this->lineUserId = $lineUserId;
         $this->lineBot = $lineBot;
-        $this->templateMessageBuilder = $templateMessageBuilder;
     }
 
     /**
