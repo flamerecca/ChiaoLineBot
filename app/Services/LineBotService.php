@@ -4,7 +4,12 @@
 namespace App\Services;
 
 
+use Illuminate\Http\Request;
 use LINE\LINEBot;
+use LINE\LINEBot\Event\MessageEvent;
+use LINE\LINEBot\Event\MessageEvent\TextMessage;
+use LINE\LINEBot\Exception\InvalidEventRequestException;
+use LINE\LINEBot\Exception\InvalidSignatureException;
 use LINE\LINEBot\Response;
 use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
@@ -12,6 +17,8 @@ use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\ImageCarouselColumnTemplateBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\ImageCarouselTemplateBuilder;
 use LINE\LINEBot\MessageBuilder;
+use LINE\LINEBot\Constant\HTTPHeader;
+use ReflectionException;
 
 class LineBotService
 {
@@ -25,22 +32,49 @@ class LineBotService
     private $lineUserId;
 
     /**
+     * @var TemplateMessageBuilder
+     */
+    private $templateMessageBuilder;
+
+    /**
      * LineBotService constructor.
      * @param string $lineUserId
      * @param LINEBot $lineBot
+     * @param TemplateMessageBuilder $templateMessageBuilder
      */
-    public function __construct(string $lineUserId, LINEBot $lineBot)
+    public function __construct(string $lineUserId, LINEBot $lineBot, TemplateMessageBuilder $templateMessageBuilder)
     {
         $this->lineUserId = $lineUserId;
         $this->lineBot = $lineBot;
+        $this->templateMessageBuilder = $templateMessageBuilder;
     }
 
     /**
-     * @param TemplateMessageBuilder $content
+     * @param Request $request
      * @return Response
+     * @throws InvalidEventRequestException
+     * @throws InvalidSignatureException
+     * @throws ReflectionException
      */
-    public function pushMessage(TemplateMessageBuilder $content): Response
+    public function pushMessage(Request $request): Response
     {
-        return $this->lineBot->pushMessage($this->lineUserId, $content);
+        $signature = $request->header(HTTPHeader::LINE_SIGNATURE);
+
+        if (empty($signature)) {
+            return response('Bad Request', 400);
+        }
+
+        $events = $this->lineBot->parseEventRequest($request->getContent(), $signature[0]);
+        foreach ($events as $event) {
+            if (!$event instanceof MessageEvent) {
+                continue;
+            }
+            if (!$event instanceof TextMessage) {
+                continue;
+            }
+            $replyText = $event->getText();
+            $response = $this->lineBot->replyText($event->getReplyToken(), $replyText);
+            return $response;
+        }
     }
 }
