@@ -58,10 +58,6 @@ class LineBotService
     {
         $signature = $request->header(HTTPHeader::LINE_SIGNATURE);
 
-        if (empty($signature)) {
-            return response('Bad Request', 400);
-        }
-
         $events = $this->lineBot->parseEventRequest($request->getContent(), $signature[0]);
         foreach ($events as $event) {
             if (!$event instanceof MessageEvent) {
