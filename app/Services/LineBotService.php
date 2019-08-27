@@ -49,16 +49,22 @@ class LineBotService
 
     /**
      * @param Request $request
-     * @return Response
      * @throws InvalidEventRequestException
      * @throws InvalidSignatureException
      * @throws ReflectionException
      */
-    public function pushMessage(Request $request): Response
+    public function pushMessage(Request $request)
     {
         $signature = $request->header(HTTPHeader::LINE_SIGNATURE);
 
-        $events = $this->lineBot->parseEventRequest($request->getContent(), $signature[0]);
+        try {
+            $events = $this->lineBot->parseEventRequest($request->getContent(), $signature[0]);
+        } catch (InvalidSignatureException $e) {
+            return response('Invalid signature', 400);
+        } catch (InvalidEventRequestException $e) {
+            return response("Invalid event request", 400);
+        }
+
         foreach ($events as $event) {
             if (!$event instanceof MessageEvent) {
                 continue;
@@ -68,8 +74,8 @@ class LineBotService
             }
             $replyText = $event->getText();
             $response = $this->lineBot->replyText($event->getReplyToken(), $replyText);
-            dd($response);
             return $response;
         }
+        return response('aaa');
     }
 }
