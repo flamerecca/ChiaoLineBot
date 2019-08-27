@@ -68,6 +68,7 @@ class LineBotService
             }
             $replyText = $event->getText();
             $response = $this->lineBot->replyText($event->getReplyToken(), $replyText);
+            dd($response);
             return $response;
         }
     }
